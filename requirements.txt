@@ -22,7 +22,7 @@ gradio==3.44.0
 
 # -----explainability-----#
 git+https://github.com/pytorch/captum.git
-grad-captum
+grad-cam
 shap
 albumentations
 
