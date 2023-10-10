@@ -1,0 +1,24 @@
+# @package _global_
+# This is basically telling following
+#  For example override /data: cifar10.yaml -> Override cifar10.yaml from configs.data
+#  If we dont give @package _global_ -> Then it will look to override cifar10.yaml from experiments.data
+#  As there is no experiments.data we will run into error
+
+# to execute this experiment run:
+# python train.py experiment=example
+
+defaults:
+  - override /data: cifar10.yaml
+  - override /model: timm.yaml
+  - override /callbacks: default
+  - override /trainer: default
+
+tags: ["cifar10"]
+
+seed: 12345
+
+model:
+  net:
+    model_name: resnet18
+    pretrained: True
+    num_classes: 10

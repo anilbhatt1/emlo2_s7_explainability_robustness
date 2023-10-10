@@ -1,0 +1,4 @@
+[core]
+    autostage = true
+['remote "emlo2s3dvcmnist"']
+    url = gdrive://1efN2Vsc_exRk0NCPwQoRFWvnzsIdFhFk
