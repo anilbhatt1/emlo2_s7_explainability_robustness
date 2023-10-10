@@ -4,7 +4,7 @@ rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 
 import urllib
 from typing import List, Tuple
-
+import os
 import hydra
 import matplotlib.pyplot as plt
 import numpy as np
@@ -268,7 +268,7 @@ def explain_model(cfg: DictConfig) -> None:
         ]
     )
     transform_normalize = T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-
+    print(f'current directory : {os.getcwd()}')
     image = Image.open(cfg.input_image)
     transformed_img = transforms(image)
     image_tensor = transform_normalize(transformed_img)

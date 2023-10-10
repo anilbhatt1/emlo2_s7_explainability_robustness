@@ -11,7 +11,7 @@ defaults:
 task_name: "explain"
 
 imagenet_classes: "./configs/imagenet_classes.txt"
-input_image: "./logBook/resources/imagenet/imagenet_blackswan_100.jpeg"
+input_image: "../logBook/resources/imagenet/imagenet_blackswan_100.jpeg"
 
 # 1 - IntegratedGradients
 # 2 - IG with Noise Tunnel
