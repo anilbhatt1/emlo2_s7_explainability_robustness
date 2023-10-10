@@ -1,11 +1,6 @@
-import pyrootutils
+import rootutils
 
-root = pyrootutils.setup_root(
-    search_from=__file__,
-    indicator=[".git", "pyproject.toml"],
-    pythonpath=True,
-    dotenv=True,
-)
+rootutils.setup_root(__file__, indicator=".project-root", pythonpath=True)
 
 import urllib
 from typing import List, Tuple
@@ -332,7 +327,7 @@ def explain_model(cfg: DictConfig) -> None:
         get_gradcamplusplus(model, image_tensor_grad, pred_label_idx)
 
 
-@hydra.main(version_base="1.2", config_path=root / "configs", config_name="explain.yaml")
+@hydra.main(version_base="1.2", config_path="../configs", config_name="explain.yaml")
 def main(cfg: DictConfig) -> None:
     explain_model(cfg)
 
