@@ -282,7 +282,7 @@ def explain_model(cfg: DictConfig) -> None:
     log.info(f"Instantiating model <{cfg.model._target_}>")
     model: LightningModule = hydra.utils.instantiate(cfg.model)
     model.eval()
-    log.info(f"Loaded Model: {model}")
+    log.info(f"Loaded Model")
 
     # Download human-readable labels for ImageNet and get the class names
     # url, filename = (
@@ -361,10 +361,18 @@ def explain_model(cfg: DictConfig) -> None:
 @hydra.main(version_base="1.2", config_path="../configs", config_name="explain.yaml")
 def main(cfg: DictConfig) -> None:
     image_lst = os.listdir(cfg.input_image_folder)
+    words_to_check = ['volleyball', 'palace', 'meerkat', 'goldfish', 'cleaver']
     for image_file_name in image_lst:
-        cfg.input_image = cfg.input_image_folder + image_file_name
-        log.info(f'Explaining {cfg.input_image}.......')
-        explain_model(cfg)
+        if ('volleyball' in image_file_name) or \
+           ('palace' in image_file_name) or \
+           ('meerkat' in image_file_name) or \
+           ('goldfish' in image_file_name) or \
+           ('cleaver' in image_file_name):
+            cfg.input_image = cfg.input_image_folder + image_file_name
+            log.info(f'Explaining {cfg.input_image}.......')
+            explain_model(cfg)
+        else:
+            log.info(f'Bypassing {image_file_name} as it is already explained before.......')
 
 if __name__ == "__main__":
     main()
