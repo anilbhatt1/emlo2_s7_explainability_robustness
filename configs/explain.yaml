@@ -11,6 +11,7 @@ defaults:
 task_name: "explain"
 
 imagenet_classes: "./configs/imagenet_classes.txt"
+input_image_folder: "./logbook/resources/imagenet/"
 input_image: "./logbook/resources/imagenet/imagenet_blackswan_100.jpeg"
 
 # 1 - IntegratedGradients

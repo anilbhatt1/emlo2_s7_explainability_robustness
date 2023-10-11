@@ -360,7 +360,11 @@ def explain_model(cfg: DictConfig) -> None:
 
 @hydra.main(version_base="1.2", config_path="../configs", config_name="explain.yaml")
 def main(cfg: DictConfig) -> None:
-    explain_model(cfg)
+    image_lst = os.listdir(cfg.input_image_folder)
+    for image_file_name in image_lst:
+        cfg.input_image = image_file_name
+        log.info(f'Explaining {cfg.input_image}.......')
+        explain_model(cfg)
 
 if __name__ == "__main__":
     main()
