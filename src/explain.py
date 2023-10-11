@@ -230,7 +230,8 @@ def get_gradcam(model, image_tensor: torch.Tensor, pred_label_idx: torch.Tensor,
     lst = image_name.split('.')
     image_name_saved = lst[1] + '_gradcam.' + lst[-1]
     image_name_save_path = '.' + image_name_saved
-    visualization.savefig(image_name_save_path)
+    pil_image = Image.fromarray(visualization)
+    pil_image.save(image_name_save_path)
 
 
 def get_gradcamplusplus(model, image_tensor: torch.Tensor, pred_label_idx: torch.Tensor, image_name: str) -> None:
@@ -263,7 +264,8 @@ def get_gradcamplusplus(model, image_tensor: torch.Tensor, pred_label_idx: torch
     lst = image_name.split('.')
     image_name_saved = lst[1] + '_gradcamplusplus.' + lst[-1]
     image_name_save_path = '.' + image_name_saved
-    visualization.savefig(image_name_save_path)    
+    pil_image = Image.fromarray(visualization)
+    pil_image.save(image_name_save_path)   
 
 
 def explain_model(cfg: DictConfig) -> None:
