@@ -58,8 +58,8 @@ def get_integrated_gradients(
         outlier_perc=1,
     )
     lst = image_name.split('.')
-    image_name_saved = lst[0] + '_ig.' + lst[-1]
-    image_name_save_path = './' + image_name_saved
+    image_name_saved = lst[1] + '_ig.' + lst[-1]
+    image_name_save_path = '.' + image_name_saved
     plt_outputs[0].savefig(image_name_save_path)
 
 def get_noise_tunnel(
