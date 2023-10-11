@@ -361,13 +361,9 @@ def explain_model(cfg: DictConfig) -> None:
 @hydra.main(version_base="1.2", config_path="../configs", config_name="explain.yaml")
 def main(cfg: DictConfig) -> None:
     image_lst = os.listdir(cfg.input_image_folder)
-    words_to_check = ['palace', 'goldfish']
     for image_file_name in image_lst:
-        if ('volleyball' in image_file_name) or \
-           ('palace' in image_file_name) or \
-           ('meerkat' in image_file_name) or \
-           ('goldfish' in image_file_name) or \
-           ('cleaver' in image_file_name):
+        if ('palace' in image_file_name) or \
+           ('goldfish' in image_file_name):
             cfg.input_image = cfg.input_image_folder + image_file_name
             log.info(f'Explaining {cfg.input_image}.......')
             explain_model(cfg)
