@@ -39,6 +39,7 @@ def get_integrated_gradients(
     default_cmap: LinearSegmentedColormap,
     transformed_img: torch.Tensor,
     pred_label_idx: torch.Tensor,
+    image_name: str
 ) -> None:
     """To explain the model using IntegratedGradients."""
 
@@ -47,7 +48,7 @@ def get_integrated_gradients(
         image_tensor, target=pred_label_idx, n_steps=200
     )
 
-    _ = viz.visualize_image_attr(
+    plt_outputs = viz.visualize_image_attr(
         np.transpose(attributions_ig.squeeze().cpu().detach().numpy(), (1, 2, 0)),
         np.transpose(transformed_img.squeeze().cpu().detach().numpy(), (1, 2, 0)),
         method="heat_map",
@@ -56,7 +57,10 @@ def get_integrated_gradients(
         sign="positive",
         outlier_perc=1,
     )
-
+    lst = image_name.split('.')
+    image_name_saved = lst[0] + '_ig.' + lst[-1]
+    image_name_save_path = './' + image_name_saved
+    plt_outputs[0].savefig(image_name_save_path)
 
 def get_noise_tunnel(
     model: timm,
@@ -64,6 +68,7 @@ def get_noise_tunnel(
     default_cmap: LinearSegmentedColormap,
     transformed_img: torch.Tensor,
     pred_label_idx: torch.Tensor,
+    image_name: str
 ) -> None:
     """To explain the model using Noise tunnel with IntegratedGradients."""
 
@@ -90,6 +95,7 @@ def get_shap(
     default_cmap: LinearSegmentedColormap,
     transformed_img: torch.Tensor,
     pred_label_idx: torch.Tensor,
+    image_name: str
 ) -> None:
     """To explain the model using SHAP."""
 
@@ -117,6 +123,7 @@ def get_occlusion(
     image_tensor: torch.Tensor,
     transformed_img: torch.Tensor,
     pred_label_idx: torch.Tensor,
+    image_name: str
 ) -> None:
     """To explain the model using Occlusion."""
 
@@ -140,7 +147,7 @@ def get_occlusion(
     )
 
 
-def get_saliency(model: timm, image_tensor: torch.Tensor, pred_label_idx: torch.Tensor) -> None:
+def get_saliency(model: timm, image_tensor: torch.Tensor, pred_label_idx: torch.Tensor, image_name: str) -> None:
     """To explain the model using Saliency."""
 
     saliency = Saliency(model)
@@ -176,7 +183,7 @@ def get_saliency(model: timm, image_tensor: torch.Tensor, pred_label_idx: torch.
     )
 
 
-def get_gradcam(model, image_tensor: torch.Tensor, pred_label_idx: torch.Tensor) -> None:
+def get_gradcam(model, image_tensor: torch.Tensor, pred_label_idx: torch.Tensor, image_name: str) -> None:
     """To explain the model using GradCAM."""
 
     target_layers = [model.net.layer4[-1]]
@@ -206,7 +213,7 @@ def get_gradcam(model, image_tensor: torch.Tensor, pred_label_idx: torch.Tensor)
     plt.show()
 
 
-def get_gradcamplusplus(model, image_tensor: torch.Tensor, pred_label_idx: torch.Tensor) -> None:
+def get_gradcamplusplus(model, image_tensor: torch.Tensor, pred_label_idx: torch.Tensor, image_name: str) -> None:
     """To explain the model using GradCAM++"""
 
     target_layers = [model.net.layer4[-1]]
@@ -287,43 +294,44 @@ def explain_model(cfg: DictConfig) -> None:
     default_cmap = LinearSegmentedColormap.from_list(
         "white to red", [(0, "#ffffff"), (0.25, "#ff0000"), (1, "#ff0000")], N=256
     )
+    image_name = cfg.input_image
 
     if 1 in cfg.model_explain:
         log.info("Integrated Gradients :")
         get_integrated_gradients(
-            model, image_tensor, default_cmap, transformed_img, pred_label_idx
+            model, image_tensor, default_cmap, transformed_img, pred_label_idx, image_name
         )
 
     if 2 in cfg.model_explain:
         log.info("Noise Tunnel :")
-        get_noise_tunnel(model, image_tensor, default_cmap, transformed_img, pred_label_idx)
+        get_noise_tunnel(model, image_tensor, default_cmap, transformed_img, pred_label_idx, image_name)
 
     if 3 in cfg.model_explain:
         log.info("SHAP :")
-        get_shap(model, image_tensor, default_cmap, transformed_img, pred_label_idx)
+        get_shap(model, image_tensor, default_cmap, transformed_img, pred_label_idx, image_name)
 
     if 4 in cfg.model_explain:
         log.info("Occlusion :")
-        get_occlusion(model, image_tensor, transformed_img, pred_label_idx)
+        get_occlusion(model, image_tensor, transformed_img, pred_label_idx, image_name)
 
     if 5 in cfg.model_explain:
         log.info("Saliency :")
         image_tensor_grad = image_tensor
         image_tensor_grad.requires_grad = True
-        get_saliency(model, image_tensor_grad, pred_label_idx)
+        get_saliency(model, image_tensor_grad, pred_label_idx, image_name)
 
     if 6 in cfg.model_explain:
         log.info("GradCAM :")
         image_tensor_grad = image_tensor
         image_tensor_grad.requires_grad = True
-        get_gradcam(model, image_tensor_grad, pred_label_idx)
+        get_gradcam(model, image_tensor_grad, pred_label_idx, image_name)
 
     if 7 in cfg.model_explain:
         log.info("GradCAMPlusPlus :")
         image_tensor_grad = image_tensor
         image_tensor_grad.requires_grad = True
 
-        get_gradcamplusplus(model, image_tensor_grad, pred_label_idx)
+        get_gradcamplusplus(model, image_tensor_grad, pred_label_idx, image_name)
 
 
 @hydra.main(version_base="1.2", config_path="../configs", config_name="explain.yaml")
