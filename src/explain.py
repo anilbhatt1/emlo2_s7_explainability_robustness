@@ -362,7 +362,7 @@ def explain_model(cfg: DictConfig) -> None:
 def main(cfg: DictConfig) -> None:
     image_lst = os.listdir(cfg.input_image_folder)
     for image_file_name in image_lst:
-        cfg.input_image = image_file_name
+        cfg.input_image = cfg.input_image_folder + image_file_name
         log.info(f'Explaining {cfg.input_image}.......')
         explain_model(cfg)
 
