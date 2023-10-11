@@ -79,7 +79,7 @@ def get_noise_tunnel(
         image_tensor, nt_samples=10, nt_type="smoothgrad_sq", target=pred_label_idx
     )
 
-    _ = viz.visualize_image_attr_multiple(
+    plt_outputs = viz.visualize_image_attr_multiple(
         np.transpose(attributions_ig_nt.squeeze().cpu().detach().numpy(), (1, 2, 0)),
         np.transpose(transformed_img.squeeze().cpu().detach().numpy(), (1, 2, 0)),
         ["original_image", "heat_map"],
@@ -87,6 +87,10 @@ def get_noise_tunnel(
         cmap=default_cmap,
         show_colorbar=True,
     )
+    lst = image_name.split('.')
+    image_name_saved = lst[1] + '_noise.' + lst[-1]
+    image_name_save_path = '.' + image_name_saved
+    plt_outputs[0].savefig(image_name_save_path)
 
 
 def get_shap(
@@ -108,7 +112,7 @@ def get_shap(
         image_tensor, n_samples=50, stdevs=0.0001, baselines=rand_img_dist, target=pred_label_idx
     )
 
-    _ = viz.visualize_image_attr_multiple(
+    plt_outputs = viz.visualize_image_attr_multiple(
         np.transpose(attributions_gs.squeeze().cpu().detach().numpy(), (1, 2, 0)),
         np.transpose(transformed_img.squeeze().cpu().detach().numpy(), (1, 2, 0)),
         ["original_image", "heat_map"],
@@ -116,6 +120,10 @@ def get_shap(
         cmap=default_cmap,
         show_colorbar=True,
     )
+    lst = image_name.split('.')
+    image_name_saved = lst[1] + '_shap.' + lst[-1]
+    image_name_save_path = '.' + image_name_saved
+    plt_outputs[0].savefig(image_name_save_path)    
 
 
 def get_occlusion(
@@ -137,7 +145,7 @@ def get_occlusion(
         baselines=0,
     )
 
-    _ = viz.visualize_image_attr_multiple(
+    plt_outputs = viz.visualize_image_attr_multiple(
         np.transpose(attributions_occ.squeeze().cpu().detach().numpy(), (1, 2, 0)),
         np.transpose(transformed_img.squeeze().cpu().detach().numpy(), (1, 2, 0)),
         ["original_image", "heat_map"],
@@ -145,6 +153,10 @@ def get_occlusion(
         show_colorbar=True,
         outlier_perc=2,
     )
+    lst = image_name.split('.')
+    image_name_saved = lst[1] + '_occlusion.' + lst[-1]
+    image_name_save_path = '.' + image_name_saved
+    plt_outputs[0].savefig(image_name_save_path)
 
 
 def get_saliency(model: timm, image_tensor: torch.Tensor, pred_label_idx: torch.Tensor, image_name: str) -> None:
@@ -173,7 +185,7 @@ def get_saliency(model: timm, image_tensor: torch.Tensor, pred_label_idx: torch.
     _ = viz.visualize_image_attr(
         None, original_image, method="original_image", title="Original Image"
     )
-    _ = viz.visualize_image_attr(
+    plt_outputs = viz.visualize_image_attr(
         grads,
         original_image,
         method="blended_heat_map",
@@ -181,6 +193,10 @@ def get_saliency(model: timm, image_tensor: torch.Tensor, pred_label_idx: torch.
         show_colorbar=True,
         title="Overlaid Gradient Magnitudes",
     )
+    lst = image_name.split('.')
+    image_name_saved = lst[1] + '_saliency.' + lst[-1]
+    image_name_save_path = '.' + image_name_saved
+    plt_outputs[0].savefig(image_name_save_path)    
 
 
 def get_gradcam(model, image_tensor: torch.Tensor, pred_label_idx: torch.Tensor, image_name: str) -> None:
@@ -209,8 +225,12 @@ def get_gradcam(model, image_tensor: torch.Tensor, pred_label_idx: torch.Tensor,
     rgb_img = inv_transform(image_tensor).cpu().squeeze().permute(1, 2, 0).detach().numpy()
     visualization = show_cam_on_image(rgb_img, grayscale_cam, use_rgb=True)
 
-    plt.imshow(visualization)
-    plt.show()
+    # plt.imshow(visualization)
+    # plt.show()
+    lst = image_name.split('.')
+    image_name_saved = lst[1] + '_gradcam.' + lst[-1]
+    image_name_save_path = '.' + image_name_saved
+    visualization.savefig(image_name_save_path)
 
 
 def get_gradcamplusplus(model, image_tensor: torch.Tensor, pred_label_idx: torch.Tensor, image_name: str) -> None:
@@ -238,8 +258,12 @@ def get_gradcamplusplus(model, image_tensor: torch.Tensor, pred_label_idx: torch
     rgb_img = inv_transform(image_tensor).cpu().squeeze().permute(1, 2, 0).detach().numpy()
     visualization = show_cam_on_image(rgb_img, grayscale_cam, use_rgb=True)
 
-    plt.imshow(visualization)
-    plt.show()
+    # plt.imshow(visualization)
+    # plt.show()
+    lst = image_name.split('.')
+    image_name_saved = lst[1] + '_gradcamplusplus.' + lst[-1]
+    image_name_save_path = '.' + image_name_saved
+    visualization.savefig(image_name_save_path)    
 
 
 def explain_model(cfg: DictConfig) -> None:
@@ -330,14 +354,11 @@ def explain_model(cfg: DictConfig) -> None:
         log.info("GradCAMPlusPlus :")
         image_tensor_grad = image_tensor
         image_tensor_grad.requires_grad = True
-
         get_gradcamplusplus(model, image_tensor_grad, pred_label_idx, image_name)
-
 
 @hydra.main(version_base="1.2", config_path="../configs", config_name="explain.yaml")
 def main(cfg: DictConfig) -> None:
     explain_model(cfg)
-
 
 if __name__ == "__main__":
     main()
