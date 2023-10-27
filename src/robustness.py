@@ -17,7 +17,7 @@ from albumentations.pytorch import ToTensorV2
 from captum.attr import FeatureAblation
 from captum.robust import FGSM, PGD, MinParamPerturbation
 from omegaconf import DictConfig
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 from pytorch_lightning import LightningModule
 
 from utils import get_pylogger
@@ -36,11 +36,13 @@ def get_prediction(model: timm, image: torch.Tensor) -> Tuple[str, float, int]:
 
     with open("./configs/imagenet_classes.txt") as f:
         categories = [s.strip() for s in f.readlines()]
-
+    log.info(f'model categories loaded')
     with torch.no_grad():
+        log.info(f'model input image.shape: {image.shape}')
         output = model(image)
-
+    log.info(f'model output: {output}')
     output = F.softmax(output, dim=1)
+    log.info(f'softmax output: {output}')
     prediction_score, pred_label_idx = torch.topk(output, 1)
 
     pred_label_idx.squeeze_()
@@ -63,14 +65,23 @@ def image_show(img: torch.Tensor, pred: str, calling_fn: str) -> None:
     )
 
     npimg = inv_transform(img).squeeze().permute(1, 2, 0).detach().numpy()
+    
+    # Create a Pillow Image from the NumPy array
+    pil_image = Image.fromarray(npimg.astype(np.uint8))  
+    # Add the prediction as a title to the image
+    from PIL import ImageDraw, ImageFont
+    draw = ImageDraw.Draw(pil_image)
+    font = ImageFont.load_default()
+    text = f"Prediction: {pred}"
+    text_width, text_height = draw.textsize(text, font=font)
+    text_x = (pil_image.width - text_width) // 2
+    text_y = 10  # Adjust the vertical position of the title
+    draw.text((text_x, text_y), text, fill=(255, 255, 255), font=font)      
 
-    plt.imshow(npimg)
-    plt.title("prediction: %s" % pred)
-    plt.show()
+    # Save the pil image as a JPG image
     image_save_dir = "./logbook/resources/imagenet/"
-    # Save the plot as a JPG image
     image_name_save_path = image_save_dir + str(calling_fn) + '.jpg'
-    plt.savefig(image_name_save_path)
+    pil_image.save(image_name_save_path)
 
 def get_pgd(model: timm, image_tensor: torch.Tensor, target_index: int) -> None:
     """Function to create a targeted PGD adversarial image."""
@@ -141,7 +152,7 @@ def get_pixel_dropout(model: timm, image_tensor: torch.Tensor, target_index: int
     pixel_dropout_im, pixels_dropped = min_pert_attr.evaluate(
         image_tensor, target=target_index, perturbations_per_eval=10
     )
-    log.info(f"Minimum Pixels Dropped:{pixels_dropped}")
+    log.info(f"Minimum Pixels Dropped:{pixels_dropped}, pixel_dropout_im.shape:{pixel_dropout_im.shape}")
 
     new_pred_dropout, score_dropout, _ = get_prediction(model, pixel_dropout_im)
 
