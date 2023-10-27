@@ -40,9 +40,9 @@ def get_prediction(model: timm, image: torch.Tensor) -> Tuple[str, float, int]:
     with torch.no_grad():
         log.info(f'model input image.shape: {image.shape}')
         output = model(image)
-    log.info(f'model output: {output}')
+    log.info(f'model output: {output.shape}')
     output = F.softmax(output, dim=1)
-    log.info(f'softmax output: {output}')
+    log.info(f'softmax output: {output.shape}')
     prediction_score, pred_label_idx = torch.topk(output, 1)
 
     pred_label_idx.squeeze_()
@@ -131,7 +131,8 @@ def get_pixel_dropout(model: timm, image_tensor: torch.Tensor, target_index: int
 
     # Choose single channel, all channels have same attribution scores
     pixel_attr = attr[:, 0:1]
-
+    log.info(f'image_tensor : {image_tensor.shape}, feature_mask: {feature_mask.shape}, pixel_attr: {pixel_attr.shape}')
+    
     def pixel_dropout(image, dropout_pixels):
         keep_pixels = image[0][0].numel() - int(dropout_pixels)
         vals, _ = torch.kthvalue(pixel_attr.flatten(), keep_pixels)
