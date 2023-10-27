@@ -63,8 +63,9 @@ def image_show(img: torch.Tensor, pred: str, calling_fn: str) -> None:
             )
         ]
     )
-
+    print(f'image_show img.shape: {img.shape}')
     npimg = inv_transform(img).squeeze().permute(1, 2, 0).detach().numpy()
+    print(f'image_show npimg.shape : {npimg.shape}')
     
     # Create a Pillow Image from the NumPy array
     pil_image = Image.fromarray(npimg.astype(np.uint8))  
