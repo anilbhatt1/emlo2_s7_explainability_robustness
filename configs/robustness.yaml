@@ -10,7 +10,7 @@ defaults:
 
 task_name: "robustness"
 
-input_image: "./logbook/resources/imagenet/imagenet_egyptiancat_185.jpeg"
+input_image: "./logbook/resources/imagenet/imagenet_holster_597.jpeg"
 
 # 1 - PGD
 # 2 - FGSM
@@ -20,4 +20,4 @@ input_image: "./logbook/resources/imagenet/imagenet_egyptiancat_185.jpeg"
 
 model_robusness: [1,2] #,3,4,5]
 
-target_index: 185
+target_index: 597
