@@ -221,7 +221,7 @@ def model_robustness(cfg: DictConfig) -> None:
     log.info(f"Instantiating model <{cfg.model._target_}>")
     model: LightningModule = hydra.utils.instantiate(cfg.model)
     model.eval()
-    log.info(f"Loaded Model: {model}")
+    log.info(f"Loaded Model...")
 
     transforms = T.Compose(
         [
