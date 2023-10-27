@@ -10,7 +10,7 @@ defaults:
 
 task_name: "robustness"
 
-input_image: "./logbook/resources/imagenet/imagenet_blackswan_100.jpeg"
+input_image: "./logbook/resources/imagenet/imagenet_egyptiancat_185.jpeg"
 
 # 1 - PGD
 # 2 - FGSM
@@ -18,6 +18,6 @@ input_image: "./logbook/resources/imagenet/imagenet_blackswan_100.jpeg"
 # 4 - Random Noise
 # 5 - Random Brightness
 
-model_robusness: [1,2] #,3,4,5]
+model_robusness: [1,2,4,5] #,3,4,5]
 
-target_index: 100
+target_index: 185
