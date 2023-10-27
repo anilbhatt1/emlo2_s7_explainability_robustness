@@ -67,6 +67,11 @@ def image_show(img: torch.Tensor, pred: str, calling_fn: str) -> None:
     npimg = inv_transform(img).squeeze().permute(1, 2, 0).detach().numpy()
     print(f'image_show npimg.shape : {npimg.shape}')
     
+    pil_image0 = Image.fromarray(npimg)
+    image_save_dir0 = "./logbook/resources/imagenet/"
+    image_name_save_path0 = image_save_dir0 + str(calling_fn) + '_0.jpg'
+    pil_image0.save(image_name_save_path0)
+
     # Create a Pillow Image from the NumPy array
     pil_image = Image.fromarray(npimg.astype(np.uint8))  
     # Add the prediction as a title to the image
