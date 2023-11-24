@@ -18,7 +18,7 @@ hydra-optuna-sweeper==1.2.0
 # aim>=3.16.2  # no lower than 3.16.2, see https://github.com/aimhubio/aim/issues/2550
 
 # ------demo -------- #
-gradio==3.44.0
+gradio==4.7.1
 
 # -----explainability-----#
 git+https://github.com/pytorch/captum.git
